@@ -87,10 +87,6 @@ describe 'Sigil syntax' do
     it 'without escaped parenthesis' do
       expect('~S(\( )').not_to include_elixir_syntax('elixirRegexEscapePunctuation', '( ')
     end
-
-    it 'Live EEx' do
-      expect('~L"""liveview template"""').to include_elixir_syntax('elixirSigilDelimiter', '"""')
-    end
   end
 
   describe 'lower case' do
@@ -132,6 +128,56 @@ describe 'Sigil syntax' do
 
     it 'escapes with slashes' do
       expect('~s/foo \n bar/').to include_elixir_syntax('elixirRegexEscapePunctuation', '\\')
+    end
+  end
+
+  describe "EEx" do
+    before(:each) { VIM.command("let g:elixir_use_html_for_eex_sigils = 1") }
+    after(:each) { VIM.command("let g:elixir_use_html_for_eex_sigils = 0") }
+
+    it "html" do
+      expect('~E(div></div>)').to include_elixir_syntax('elixirSigilDelimiter', 'E')
+      expect('~E(<div></div>)').to include_elixir_syntax('htmlTag', 'div')
+    end
+
+    it "delimited with braces" do
+      expect('~E{div></div>}').to include_elixir_syntax('elixirSigilDelimiter', 'E')
+      expect('~E{<div></div>}').to include_elixir_syntax('htmlTag', 'div')
+    end
+
+    it "delimited with brackets" do
+      expect('~E[div></div>]').to include_elixir_syntax('elixirSigilDelimiter', 'E')
+      expect('~E[<div></div>]').to include_elixir_syntax('htmlTag', 'div')
+    end
+
+    it "delimited with heredocs" do
+      expect('~E"""div></div>"""').to include_elixir_syntax('elixirSigilDelimiter', 'E')
+      expect('~E"""<div></div>"""').to include_elixir_syntax('htmlTag', 'div')
+    end
+  end
+
+  describe "Live EEx" do
+    before(:each) { VIM.command("let g:elixir_use_html_for_eex_sigils = 1") }
+    after(:each) { VIM.command("let g:elixir_use_html_for_eex_sigils = 0") }
+
+    it "html" do
+      expect('~L(div></div>)').to include_elixir_syntax('elixirSigilDelimiter', 'L')
+      expect('~L(<div></div>)').to include_elixir_syntax('htmlTag', 'div')
+    end
+
+    it "delimited with braces" do
+      expect('~L{div></div>}').to include_elixir_syntax('elixirSigilDelimiter', 'L')
+      expect('~L{<div></div>}').to include_elixir_syntax('htmlTag', 'div')
+    end
+
+    it "delimited with brackets" do
+      expect('~L[div></div>]').to include_elixir_syntax('elixirSigilDelimiter', 'L')
+      expect('~L[<div></div>]').to include_elixir_syntax('htmlTag', 'div')
+    end
+
+    it "delimited with heredocs" do
+      expect('~L"""div></div>"""').to include_elixir_syntax('elixirSigilDelimiter', 'L')
+      expect('~L"""<div></div>"""').to include_elixir_syntax('htmlTag', 'div')
     end
   end
 end

@@ -106,12 +106,19 @@ syn region elixirSigil matchgroup=elixirSigilDelimiter start="\~\l\/"           
 syn region elixirSigil matchgroup=elixirSigilDelimiter start=+\~\a\z("""\)+ end=+^\s*\z1+ skip=+\\"+ fold
 syn region elixirSigil matchgroup=elixirSigilDelimiter start=+\~\a\z('''\)+ end=+^\s*\z1+ skip=+\\'+ fold
 
+" EEx and LiveView Sigils
+if exists('g:elixir_use_html_for_eex_sigils') && g:elixir_use_html_for_eex_sigils
+  syn include @HTML syntax/html.vim
+  unlet b:current_syntax
 
-" LiveView Sigils surrounded with ~L"""
-syntax include @HTML syntax/html.vim
-unlet b:current_syntax
-syntax region elixirLiveViewSigil matchgroup=elixirSigilDelimiter keepend start=+\~L\z("""\)+ end=+^\s*\z1+ skip=+\\"+ contains=@HTML fold
-
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start="\~[EL]\z(/\|\"\|'\||\)" end="\z1" skip="\\\\\|\\\z1" contains=@HTML fold
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start="\~[EL]{"                end="}"   skip="\\\\\|\\}"   contains=@HTML fold
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start="\~[EL]<"                end=">"   skip="\\\\\|\\>"   contains=@HTML fold
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start="\~[EL]\["               end="\]"  skip="\\\\\|\\\]"  contains=@HTML fold
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start="\~[EL]("                end=")"   skip="\\\\\|\\)"   contains=@HTML fold
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start=+\~[EL]\z('''\)+         end=+^\s*\z1+                contains=@HTML fold
+  syn region elixirEExSigil matchgroup=elixirSigilDelimiter  start=+\~[EL]\z("""\)+         end=+^\s*\z1+                contains=@HTML fold
+endif
 
 " Documentation
 if exists('g:elixir_use_markdown_for_docs') && g:elixir_use_markdown_for_docs
